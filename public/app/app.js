@@ -6,4 +6,3 @@ angular
 	$mdThemingProvider.theme('default')
 	.primaryPalette('teal')
 });
-
