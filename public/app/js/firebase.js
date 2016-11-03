@@ -1,12 +1,12 @@
 // Initialize Firebase
-  var config = {
-    apiKey: "AIzaSyBT0u-U-mS5G68PdUc6YgzqsuIrsy271-8",
-    authDomain: "muhub-28d0a.firebaseapp.com",
-    databaseURL: "https://muhub-28d0a.firebaseio.com",
-    storageBucket: "muhub-28d0a.appspot.com",
-    messagingSenderId: "814875035414"
-  };
-  firebase.initializeApp(config);
+var config = {
+    apiKey: "AIzaSyBe8TpLgjQ6rDJoSoYkrtwOvJ8yGUe_ZOA",
+    authDomain: "cs353-project.firebaseapp.com",
+    databaseURL: "https://cs353-project.firebaseio.com",
+    storageBucket: "",
+    messagingSenderId: "480455815960"
+};
+firebase.initializeApp(config);
 var auth = firebase.auth();
 var database = firebase.database();
 var storage = firebase.storage();
@@ -108,5 +108,4 @@ auth.onAuthStateChanged(function(user){
     document.getElementById('auth_splash').classList.remove('hide');
   }
 });
-
 
