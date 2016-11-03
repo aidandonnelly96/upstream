@@ -41,8 +41,8 @@ function signup() {
 
 function login() {
   alert("what");
-  var email = "aidandonnelly96@hotmail.com";
-  var password = "aidand96";
+  var email = "";
+  var password = "";
 
   if (email.length < 5) {
     alert("Enter a valid email!");
