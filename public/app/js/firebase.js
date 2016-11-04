@@ -38,11 +38,15 @@ function signup() {
     }
   });
 }
-
+function GsignIn() {
+  // Sign in Firebase using popup auth and Google as the identity provider.
+  var provider = new firebase.auth.GoogleAuthProvider();
+  this.auth.signInWithPopup(provider);
+}
 function login() {
   alert("what");
-  var email = "";
-  var password = "";
+  var email=document.getElementById("email").value;
+  var password=document.getElementById("pw").value;
 
   if (email.length < 5) {
     alert("Enter a valid email!");
@@ -81,30 +85,20 @@ function reset_pass(){
 function initChat(user) {
         // Get a Firebase Database ref
         var chatRef = firebase.database().ref();
-
         // Create a Firechat instance
         var chat = new FirechatUI(chatRef, document.getElementById("firechat-wrapper"));
-
         // Set the Firechat user
-        chat.setUser(user.uid, user.displayName);
+        chat.setUser(user.uid, "Anon"+user.uid);
+		chat._bindForRoomList();
 }
-
 auth.onAuthStateChanged(function(user){
   if(user) {
-	document.getElementById("input_3").value=user.uid;
-	//initChat(user);
 	alert("x");
-	document.getElementById("login_email").value=user.uid;
+	initChat(user);
 	var currentuser=user;
     // window.location.href = "https://bolbole-3a52b.firebaseapp.com/#";
-    document.getElementById('login_email').visibility=hidden;
-	document.getElementById('uIcons').style.display=block;
   } else {
-	document.getElementById("input_3").value=user.uid;
-	document.getElementById('i1').src="http://thinkingonthesethings.com/wp-content/uploads/2015/05/A-FONT.png";
     // window.location.href = "https://bolbole-3a52b.firebaseapp.com/#/user_auth";
-	document.getElementById('uIcons').style.visibility=hidden;
-    document.getElementById('body').classList.add('inactive');
     document.getElementById('auth_splash').classList.remove('hide');
   }
 });
