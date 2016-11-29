@@ -1,0 +1,170 @@
+<aiml version="1.0.1" encoding="UTF-8">
+<!-- VeritasQuestions.aiml -->
+		<category>
+		<pattern>WHAT IS THE DIFFERENCE BETWEEN A GLOBAL AND LOCAL PRODUCT</pattern>
+		<template>
+			Global product groups local product names into a predefined name used by businesses on an international level. A local product represents the name being used by businesses within each country to determine the product of a policy, which can be the same as, a variation of or different to the global product name.
+		</template>
+		</category>
+		<category>
+		<pattern>WHAT IS YOUR NAME?</pattern>
+		<template>
+			My name is MuBot
+		</template>
+		</category>
+        <category>
+            <pattern>* ABOUT VERITAS</pattern>
+            <template><srai>VERITAS</srai></template>
+        </category>
+        <category>
+            <pattern>* AIM OF VERITAS</pattern>
+            <template><srai>VERITAS</srai></template>
+        </category>
+        <category>
+            <pattern>TELL ME ABOUT VERITAS</pattern>
+            <template><srai>VERITAS</srai></template>
+        </category>
+        <category>
+        <pattern>WHAT IS VERITAS</pattern>
+        <template>Veritas is ACIA's enterprise Data Warehouse platform which is hosted on an EC2 instance in the AWS Internal Production VPC.</template>
+		</category>
+        <category>
+            <pattern>VERITAS</pattern>
+            <template>
+                The aim of Veritas is to provide both ACIA and Aon In-point colleagues with a platform to conduct advanced analytics along with providing broker and carrier insight.
+            </template>
+        </category>
+
+    <!--category>
+        <pattern>WHAT IS PREMIUM</pattern>
+        <template>
+            Is a datamart and it is available for consumption.
+        </template>
+    </category-->
+	<category>
+		<pattern>WHAT IS THE DIFFERENCE BETWEEN A GLOBAL AND LOCAL PRODUCT</pattern>
+		<template>
+			Global product groups local product names into a predefined name used by businesses on an international level. A local product represents the name being used by businesses within each country to determine the product of a policy, which can be the same as, a variation of or different to the global product name.
+		</template>
+	</category>
+
+    <category>
+        <pattern>* CARRIER</pattern>
+        <template>
+            An insurance or reinsurance company that insures or "carries" the insurance or reinsurance.
+        </template>
+    </category>
+
+    <category>
+        <pattern>* DEFINITION OF AN OPPORTUNITY</pattern>
+        <template>
+            Opportunities are defined as individual policies that are due to expire in the next 12 months. It can also be a grouping of policies that share expiration date
+        </template>
+    </category>
+
+    <category>
+        <pattern>WHAT IS A DATA WAREHOUSE</pattern>
+        <template>
+            A data warehouse is a large store of data accumulated from a wide range of sources within a company and is used to guide management decisions.
+        </template>
+    </category>
+
+    <category>
+        <pattern>WHAT IS AN OLAP DATABASE</pattern>
+        <template>
+            OLAP is part of the broader category of business intelligence, which also encompasses relational database, report writing and data mining.
+        </template>
+    </category>
+
+    <category>
+        <pattern>WHAT IS A CUBE OF INFORMATION</pattern>
+        <template>
+            The Information Cube is a new 3D visualization technique for hierarchical information
+        </template>
+    </category>
+
+    <category>
+        <pattern>WHAT IS A PIPELINE</pattern>
+        <template>
+             An activity, item of information, material, or product, that is between the starting point and the completion point is 'in pipeline
+        </template>
+    </category>
+
+    <category>
+        <pattern>WHAT IS AIMS</pattern>
+        <template>
+             Aon Information Management System
+        </template>
+    </category>
+
+    <category>
+        <pattern>* ACCESS TO VERITAS</pattern>
+        <template>
+            1. Request to be sent to Service Desk including business requirement for access and manager approval
+
+			2. Service Desk to review request and confirm approval with Product Owner
+
+			3. If requirements meet forward request to the DBA team
+
+			4. DBA team to provide connection details (server/instance address, user credentials)
+		</template>
+    </category>
+
+    <category>
+        <pattern>* CONNECT TO VERITAS</pattern>
+        <template>
+             The DBA team will provide connection details (server/instance address, user credentials) that you can use to connect via any tool that can handle Veritas
+        </template>
+    </category>
+
+    <category>
+        <pattern>WHAT IS A DATAMART</pattern>
+        <template>
+             The datamart is a subset of the data warehouse that is usually oriented to a specific business line or team. Datamarts are small slices of the data warehouse.
+        </template>
+    </category>
+
+    <category>
+        <pattern>* A CAPTIVE</pattern>
+        <template>
+             An insurance company that as its primary purpose, finances the risks of its owners or participants, i.e. the insurer is captive to the policyholder.
+        </template>
+    </category>
+
+    <category>
+        <pattern>HOW DOES A DATA WAREHOUSE WORK</pattern>
+        <template>
+             A data warehouse is constructed by integrating data from multiple heterogeneous sources
+        </template>
+    </category>
+
+    <category>
+        <pattern>WHAT KIND OF THINGS CAN I DO IN VERITAS</pattern>
+        <template>
+             Veritas will consist of 4 different datamarts to enable analytics and reporting on 4 main functions.
+        </template>
+    </category>
+
+    <category>
+        <pattern>HOW OFTEN IS THE INFORMATION REFRESHED</pattern>
+        <template>
+             A further goal of the project is to ensure data can be refreshed in a more timely fashion. Initially this will be weekly. Ultimately this will be daily or even intra-day.
+        </template>
+    </category>
+
+    <category>
+        <pattern>WHAT DOES VERITAS OFFER</pattern>
+        <template>
+             Veritas offers policy data available at lowest level of granularity
+        </template>
+    </category>
+
+    <category>
+        <pattern>WHAT IS TABLEAU</pattern>
+        <template>
+             Tableau is a software that produces a family of interactive data visualisation products focused on business intelligence
+        </template>
+    </category>
+
+
+</aiml>

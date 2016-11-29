@@ -67,6 +67,7 @@
 						.child(firebaseUser.uid)
 						.set({
 							first_name: first_name,
+							id: Auth.$getAuth().uid,
 							last_name: last_name,
 							email: firebaseUser.email,
 						})
@@ -99,9 +100,9 @@
 					.then(function(firebaseUser) {
 						if (!firebaseUser.emailVerified) {
 							toast.display('Your email has not been verified yet');
-							$state.go('login');
-						} else { 
-							$state.go('home'); 
+							$state.go('home');
+						} else {
+							$state.go('home');						
 							toast.display("You've been signed in");
 						};
 					}).catch(function(error) {

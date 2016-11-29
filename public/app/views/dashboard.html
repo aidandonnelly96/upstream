@@ -66,34 +66,178 @@
     </md-tab>
 
     <md-tab label="Dashboard">
-        <md-content class="md-padding">
+       <md-content class="md-padding" flex ng-controller="mp.map">
             <md-grid-list md-cols-gt-sm="6" md-cols="1" md-gutter="2em" md-row-height="1:1">
 
                 <md-grid-tile md-colspan-gt-sm="3" md-colspan="1" md-rowspan-gt-sm="3" md-rowspan="2">
-                    <md-card layout-fill>
-                        <md-card-header layout-fill>
-                            <h2>Messages</h2>
-                        </md-card-header>
+                    <md-card flex ng-app="app" layout-fill>
+
+                        <md-toolbar layout="row" class="md-primary">
+                            <div class="md-toolbar-tools">
+                                <span>Messages</span>
+                            </div>
+                        </md-toolbar>
+						<div>
+                            <md-input-container md-no-float>
+                                <span layout="row" style="padding-right: 30px">
+                                    <md-icon aria-label="search" class="material-icons" style="padding-right: 30px">search</md-icon>
+                                    <input type="text" ng-model="search_text_chat" placeholder="Search">
+                                </span>
+                            </md-input-container>
+                        </div>
+						<!--<md-card-content>
+								<div id="firechat-wrapper">
+									<ul id="firechat-room-list">
+									
+									</ul>
+								</div>
+						</md-card-content>-->
+                        <section flex layout="column">
+                            <!-- <md-subheader class="md-accent">{{subheader}}</md-subheader> -->
+                            <md-list flex>
+                                <md-virtual-repeat-container layout-fill style="height:auto;" md-top-index="topIndex">
+                                    <md-list-item class="md-3-line" md-virtual-repeat="item in rooms | orderBy: 'campus' | filter: search_text_chat" layout-fill>
+                                        <div class="md-list-item-text" layout="column" layout-padding>
+                                            <md-button ng-click="openChat(item)" class="md-primary">{{item.first_name+" "+item.last_name}}</md-button>
+                                        </div>
+                                        <md-divider></md-divider>
+                                    </md-list-item>
+                                </md-virtual-repeat-container>
+                            </md-list>
+                        </section>
                     </md-card>
                 </md-grid-tile>
 
                 <md-grid-tile md-colspan-gt-sm="3" md-colspan="1" md-rowspan-gt-sm="1" md-rowspan="1">
                     <md-card layout-fill>
-                        <md-card-header layout-fill>
-                            <h2>Weather</h2>
-                        </md-card-header>
+                        <md-toolbar layout="row" class="md-primary">
+                            <div class="md-toolbar-tools">
+                                <span>Weather</span>
+                            </div>
+                        </md-toolbar>
                     </md-card>
                 </md-grid-tile>
 
                 <md-grid-tile md-colspan-gt-sm="3" md-colspan="1" md-rowspan-gt-sm="2" md-rowspan="1">
                     <md-card layout-fill>
-                        <md-card-header layout-fill>
-                            <h2>Timetable</h2>
-                        </md-card-header>
+                        <md-toolbar layout="row" class="md-primary">
+                            <div class="md-toolbar-tools">
+                                <span>Timetable</span>
+                            </div>
+                        </md-toolbar>
                     </md-card>
                 </md-grid-tile>
 
             </md-grid-list>
         </md-content>
-    </md-tab>
+</md-tab>
+<md-tab label="Forums">
+<md-content class="md-padding" flex ng-controller="mp.map" style="margin-left:375px">
+		<md-grid-list md-cols-gt-sm="6" md-cols="1" md-gutter="2em" md-row-height="1:1">
+		    <md-grid-tile md-colspan-gt-sm="4" md-colspan="3" md-rowspan-gt-sm="2" md-rowspan="0">
+                <md-card flex ng-app="app" layout-fill>
+					<div>
+					  <md-input-container>
+						<label>Title</label>
+						<input ng-model="postData.title"></input>
+					  </md-input-container>
+					</div>
+					  <form name="postForm">
+
+						<div layout-gt-sm="row">
+
+						  <md-input-container class="md-block" flex-gt-sm>
+							<label>Subject</label>
+							<md-select ng-model="postData.subject">
+							  <md-option ng-repeat="subject in subjects" value="{{subject.abbrev}}">
+								{{subject.abbrev}}
+							  </md-option>
+							</md-select>
+						  </md-input-container>
+						</div>
+
+						<md-input-container class="md-block">
+						  <label>More info</label>
+						  <textarea ng-model="postData.body" md-maxlength="500" rows="3" md-select-on-focus></textarea></br>
+						  <md-button type="submit" ng-click="writeNewPost(postData.title, postData.subject, postData.body)" class="md-raised md-primary">Post</md-button>
+						</md-input-container>
+						 
+					  </form>
+				</md-card>
+			</md-grid-tile>
+		</md-grid-list>
+		</br>
+        <md-grid-list md-cols-gt-sm="6" md-cols="1" md-gutter="2em" md-row-height="1:1">
+
+                <md-grid-tile md-colspan-gt-sm="4" md-colspan="1" md-rowspan-gt-sm="2" md-rowspan="2">
+                    <md-card flex ng-app="app" layout-fill>
+
+						<div>
+                            <md-input-container md-no-float>
+                                <span layout="row" style="padding-right: 30px">
+                                    <md-icon aria-label="search" class="material-icons" style="padding-right: 30px">search</md-icon>
+                                    <input type="text" ng-model="search_text_posts" placeholder="Search">
+                                </span>
+                            </md-input-container>
+                        </div>
+                        <section flex layout="column">
+                            <!-- <md-subheader class="md-accent">{{subheader}}</md-subheader> -->
+                            <md-list flex>
+                                <md-virtual-repeat-container layout-fill style="height:auto;" md-top-index="topIndex">
+                                    <md-list-item class="md-3-line" md-virtual-repeat="item in posts | orderBy: 'campus' | filter: search_text_posts" layout-fill>
+                                        <div class="md-list-item-text" layout="column" layout-padding>
+                                            <h5>{{item.author}}</br>{{item.date}}</br>{{item.subject}}</h5>
+                                            <h5>{{item.body}}</h5>
+                                        </div>
+                                        <md-divider></md-divider>
+                                    </md-list-item>
+                                </md-virtual-repeat-container>
+                            </md-list>
+                        </section>
+                    </md-card>
+                </md-grid-tile>
+        </md-grid-list>
+    </md-content>
+</md-tab>
+<md-tab label="Mubot">
+		<md-content class="md-padding" flex ng-controller="mp.map" style="margin-left:375px">
+            <md-grid-list md-cols-gt-sm="6" md-cols="1" md-gutter="2em" md-row-height="1:0.9">
+
+                <md-grid-tile md-colspan-gt-sm="4" md-colspan="2" md-rowspan-gt-sm="3" md-rowspan="1">
+                    <md-card layout-fill>
+
+                        <md-toolbar layout="row" class="md-primary">
+                            <div class="md-toolbar-tools">
+                                <span>MuBot</span>
+                            </div>
+                        </md-toolbar>
+
+                        <section flex layout="column">
+                            <!-- <md-subheader class="md-accent">{{subheader}}</md-subheader> -->
+                            <md-list flex>
+                                <md-virtual-repeat-container layout-fill style="height:auto;" md-top-index="topIndex">
+                                    <md-list-item class="md-3-line" md-virtual-repeat="item in botmessages" layout-fill>
+                                        <div class="md-list-item-text" layout="column" layout-padding>
+                                            <h4>{{item.message}}</h4>
+                                        </div>
+                                        <md-divider></md-divider>
+                                    </md-list-item>
+                                </md-virtual-repeat-container>
+                            </md-list>
+                        </section>
+
+                        <div>
+                            <md-input-container md-no-float>
+                                <span layout="row" style="padding-right: 30px; padding-left:30px">
+                                    <input type="text" ng-model="search_text_bot" placeholder="Ask a Question..."></input>
+                                </span>
+                            </md-input-container>
+							<md-button type="submit" onclick="findanswer()" class="md-raised md-primary">Send</md-button>
+                        </div>
+
+                    </md-card>
+                </md-grid-tile>
+			</md-grid-list>
+		</md-content> 
+</md-tab>
 </md-tabs>
