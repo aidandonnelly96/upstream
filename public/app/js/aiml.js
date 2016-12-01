@@ -1,4 +1,4 @@
-AIMLInterpreter = require('./AIMLInterpreter');
+AIMLInterpreter = require('C:\\Users\\Aidan\\Desktop\\upstream\\public\\node_modules\\aimlinterpreter\\AIMLInterpreter');
 var aimlInterpreter = new AIMLInterpreter({name:'MuBot', age:'42'});
 aimlInterpreter.loadAIMLFilesIntoArray(['./answer.xml']);
 var callback = function(answer, wildCardArray, input){
