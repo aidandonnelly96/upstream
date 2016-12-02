@@ -10,7 +10,7 @@
 		
 		function map($scope, NgMap, $firebaseArray, Data, Auth, $timeout) {
 		
-
+			$scope.botmessages="";
 			// add map to scope
 			NgMap.getMap().then(function(map) {
 				$scope.map = map;
@@ -18,7 +18,17 @@
 			// pull location data from firebase
 			$scope.locations = $firebaseArray(Data.child('locations'));
 			$scope.find=function(input){
-				$scope.response=findanswer(input);
+				$scope.input="You: "+input;
+				$scope.response="Mubot: "+findanswer(input);
+				if($scope.response=="Mubot: undefined"){
+					$scope.response="Mubot: Unfortunately, I don't have an answer for that";
+				}
+				if($scope.response=="Mubot: Hi"){
+					$scope.response="Mubot: Hi "+$scope.first_name+"!";
+				}
+				$scope.botmessages+=$scope.input;
+				$scope.botmessages+=$scope.response;
+				console.log($scope.botmessages);
 			}
 			$scope.rooms = $firebaseArray(Data.child('users'));
 			var d = new Date();
@@ -27,10 +37,12 @@
 			$scope.subjects = ('Computer Science,Biology,Chemistry,History,Psychology,Anthropology,Engineering,Experimental Physics,Mathematics,Mathematical Pysics ').split(',').map(function(subject) {
 				return {abbrev: subject};
 			});
+			$scope.uid = Auth.$getAuth().uid;
 			var uid = Auth.$getAuth().uid;
 			Data.child('users').child(uid).once('value', function(snap) {
 				$timeout(function() {
 					var item = snap.val();
+					$scope.first_name=item.first_name;
 					$scope.name = item.first_name + " " + item.last_name;
 				});
 			});
@@ -113,8 +125,6 @@
 							console.log($scope.messages);
 							tabs.push({ title: item.first_name+" "+item.last_name, content: messages, id: item.id, disabled: false});
 						});
-						
-							
 					}
 					//$chatroom=Data.child('users').child(Auth.$getAuth().uid).child('chatwith').child($scope.uid).child('roomid').set(newChatKey);
 					else if(roomNotExist(Auth.$getAuth().uid, item.id)){

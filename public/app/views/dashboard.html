@@ -78,25 +78,22 @@
                             </div>
                         </md-toolbar>
                         <section flex layout="column">
-							<div>
-								<md-input-container md-no-float>
-									<span layout="row" style="padding-right: 30px">
-										<md-icon aria-label="search" class="material-icons" style="padding-right: 30px">search</md-icon>
-										<input type="text" ng-model="search_text_chat" placeholder="Search">
-									</span>
-								</md-input-container>
-							</div>
-                            <!-- <md-subheader class="md-accent">{{subheader}}</md-subheader> -->
                               <md-content class="md-padding" style="background-color:white">
 									<md-tabs md-selected="selectedIndex" md-border-bottom md-autoselect>
 										<md-tab label={{chattab.title}}>
+											<md-input-container md-no-float>
+												<span layout="row" style="padding-right: 30px">
+													<md-icon aria-label="search" class="material-icons" style="padding-right: 30px">search</md-icon>
+													<input type="text" ng-model="search_text_chat" placeholder="Search">
+												</span>
+											</md-input-container>
 											<div ng-repeat="item in chattab.content | filter: search_text_chat">
 												<md-button ng-click="openChat(item)" class="md-primary">{{item.first_name}}  {{item.last_name}}</md-button>
 												<md-divider></md-divider>
 											</div>
 										</md-tab>
 										<md-tab ng-click="setChat(tab.id)" ng-repeat="tab in tabs" label={{tab.title}} ng-if="tab.title!='Chat'" ng-disabled="tab.disabled" layout-fill>
-												<div class="demo-tab tab{{$index%4}}" style="padding: 25px; text-align: left;">
+												<div class="demo-tab tab{{$index%4}}" style="overflow-y: scroll; height: 70%; padding: 25px; text-align: left;">
 													<div ng-repeat="item in messages">
 														</br>{{item.body}}</br>
 													</div>
@@ -220,7 +217,7 @@
                                 <md-virtual-repeat-container layout-fill style="height:auto;" md-top-index="topIndex">
                                     <md-list-item class="md-3-line" md-virtual-repeat="item in botmessages" layout-fill>
                                         <div class="md-list-item-text" layout="column" layout-padding>
-                                            <h4>{{response}}</h4>
+											<h3>{{item}}</h3>
                                         </div>
                                         <md-divider></md-divider>
                                     </md-list-item>
@@ -229,9 +226,10 @@
                         </section>
 
                         <div>
+							<h4 style="text-align: center">{{input}}</h4>
+							<h5 style="text-align: center">{{response}}</h5>
                             <md-input-container md-no-float>
                                 <span layout="row" style="padding-right: 30px; padding-left:30px">
-									<h5>{{response}}</h5>
                                     <input type="text" ng-model="search_text_bot" placeholder="Ask a Question..."></input>
                                 </span>
                             </md-input-container>

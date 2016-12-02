@@ -5120,16 +5120,16 @@ AIMLInterpreter = require('C:\\Users\\Aidan\\Desktop\\upstream\\public\\node_mod
 var aimlInterpreter = new AIMLInterpreter({name:'MuBot', age:'42'});
 aimlInterpreter.loadAIMLFilesIntoArray(['C:\\Users\\Aidan\\Desktop\\upstream\\public\\app\\aiml\\answer.xml']);
 var callback = function(answer, wildCardArray, input){
-	//console.log(answer + ' | ' + wildCardArray + ' | ' + input);
-	return answer;
+console.log(answer + ' | ' + wildCardArray + ' | ' + input);
 };
 
 /*var findanswer=function(){
-	//console.log("hello earth");
+	console.log("hello earth");
 }*/
-window.findanswer = function(input){
-	var answer=aimlInterpreter.findAnswerInLoadedAIMLFiles(input, callback);
-	return answer;
+window.findanswer = function(){
+	console.log("whats up?");
+	aimlInterpreter.findAnswerInLoadedAIMLFiles('What is your name?', callback);
+	console.log("xxxx");
 }
 
 },{"C:\\Users\\Aidan\\Desktop\\upstream\\public\\node_modules\\aimlinterpreter\\AIMLInterpreter":29}],29:[function(require,module,exports){
@@ -5161,12 +5161,12 @@ var AIMLInterpreter = function(botAttributesParam){
         var readAIMLFile = function(file){
             /*fs.readFile(file, 'utf8', function (err,data) {
                 if (err) {
-                    return //console.log(err);
+                    return console.log(err);
                 }
-				*/
+
                 fileIndex++;
-				//<category><pattern></pattern><template></template></category>
-                new DomJS().parse("<aiml version=\"1.0.1\" encoding=\"UTF-8\"><category><pattern>HOW CAN I RENT A BOOK FROM THE LIBRARY</pattern><template>There are computers located at the stairs on the 1st floor of the library, you can use these to search for a book, check its availability and find its location in the library. Once you've found the book, bring it down to the machines opposite the library reception desk and scan it to mark it as unavailable. These machines will issue a receipt, on it, you'll find the return date. If you fail to return the book by this date, a fine will be issued.</template></category><category><pattern>HOW DO I*</pattern><template><srai>HOW CAN I<star/></srai></template></category><category><pattern>CLASSHALL *</pattern><template>Classhall <star/> is located in the Arts Block on north campus.</template></category><category><pattern>JH*</pattern><template>JH<star/> is located in the John Hume building on the north campus</template></category><category><pattern>WHERE IS *</pattern><template><srai><star/></srai></template></category><category><pattern>WHERE CAN I FIND A QUIET PLACE TO STUDY</pattern><template>The library, callan building computer labs and the quiet room in the Arts Block are all good spots. Callan has an abundance of computers so that's your best bet.</template></category><category><pattern>WHERE CAN STUDENTS GO FOR FOOD IN MAYNOOTH</pattern><template><random><li>I hear O'Neills do a mean curry</li><li>Brady's 5 euro goujons and chips. Can't go wrong.</li><li>Keep it local. Go to the SU.</li></random></template></category><category><pattern>MY NAME IS *</pattern><template>Well, its lovely to meet you, <set name=\"USER_NAME\"><star/></set></template></category><category><pattern>* YOUR NAME?</pattern><template>My name is <bot name=\"name\"/></template></category><category><pattern>HELLO *</pattern><template><srai>HI *</srai></template></category><category><pattern>HOW CAN I CONTACT DR. KEVIN CASEY?</pattern><template>Dr. Casey can be found in room 146 on the first floor of the Eolas building. He can be contacted by phone at (01) 474 7553 or by email at kevin.casey@nuim.ie.</template></category><category><pattern>HOW CAN I CONTACT MY LECTURERS?</pattern><template>Contact details for Maynooth University staff members are available at https://www.maynoothuniversity.ie/people. You can also ask me for their details, I'm happy to help.</template></category><category><pattern>HI *</pattern><template>Hi</template></category><category><pattern>WHATS UP</pattern><template>Not much.</template></category></aiml>", function(err, dom) {
+
+                new DomJS().parse(data, function(err, dom) {
                     var topCategories, topics;
                     if (err) {
                         //            return cb(err);
@@ -5180,22 +5180,23 @@ var AIMLInterpreter = function(botAttributesParam){
                         readAIMLFile(fileArray[fileIndex]);
                     }
                     else{
-                        //console.log('AIML file is loaded!');
+                        console.log('AIML file is loaded!');
                         isAIMLFileLoaded = true;
                     }
                 });
-            //});
+            });*/
         }
         readAIMLFile(fileArray[fileIndex]);
     };
+
     this.findAnswerInLoadedAIMLFiles = function(clientInput, cb){
         //check if all AIML files have been loaded. If not, call this method again after a delay
-		if(isAIMLFileLoaded){
+		console.log("hi there");
+        if(isAIMLFileLoaded){
             clientInput = clientInput.toUpperCase();
             wildCardArray = [];
             var result = '';
             for(var i = 0; i < domArray.length; i++){
-				//console.log(domArray[i]);
                 cleanDom(domArray[i].children);
                 result = findCorrectCategory(clientInput, domArray[i].children);
                 if(result){
@@ -5204,14 +5205,10 @@ var AIMLInterpreter = function(botAttributesParam){
             }
 
             if(result){
-				//break;
-				//console.log(result);
                 result = cleanStringFormatCharacters(result);
                 previousAnswer = result;
-				return result;
             }
             cb(result, wildCardArray, clientInput);
-			
         }
         else{
             var findAnswerInLoadedAIMLFilesWrapper = function(clientInput, cb){
@@ -5265,7 +5262,6 @@ var findCorrectCategory = function(clientInput, domCategories){
                 //text gets the value of the current pattern node
                 var text = travereseThroughDomToFindMatchingPattern(categories[i].children);
                 //check if the input of the user matches the pattern text
-				//console.log(text);
                 var matches = checkIfMessageMatchesPattern(clientInput, text);
                 if(matches){
                     //check if a 'that' tag is existing. If yes, check if the text of the that tag matches the previous given answer.
@@ -5695,7 +5691,7 @@ DomJS.prototype.parse = function(string, cb) {
 	
 	parser.ontext = function (text) {
 		if (self.currElement == null) {
-			// //console.log("Content in the prolog " + text);
+			// console.log("Content in the prolog " + text);
 			return;
 		}
 		var textNode = new Text(text);
@@ -5735,7 +5731,7 @@ DomJS.prototype.parse = function(string, cb) {
 	
 	parser.oncomment = function (comment) {
 		if (self.currElement == null) {
-			////console.log("Comments in the prolog discarded " + comment);
+			//console.log("Comments in the prolog discarded " + comment);
 			return;
 		}		
 		var commentNode = new Comment(comment);

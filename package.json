@@ -1,0 +1,19 @@
+{
+  "name": "upstream",
+  "version": "1.0.0",
+  "description": "This is the official **upstream** repository for the CS353 project. It is the single public server-side repository that contains the codebase for the project.",
+  "main": "upstream",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/aidandonnelly96/upstream.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/aidandonnelly96/upstream/issues"
+  },
+  "homepage": "https://github.com/aidandonnelly96/upstream#readme"
+}

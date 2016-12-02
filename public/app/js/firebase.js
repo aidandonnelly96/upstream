@@ -10,6 +10,9 @@ firebase.initializeApp(config);
 var auth = firebase.auth();
 var database = firebase.database();
 var storage = firebase.storage();
+var func=function(){
+	console.log("Hey");
+}
 function initChat(user) {
         // Get a Firebase Database ref
         //var chatRef = firebase.database().ref();
