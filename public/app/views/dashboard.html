@@ -66,11 +66,11 @@
     </md-tab>
 
     <md-tab label="Dashboard">
-       <md-content class="md-padding" flex ng-controller="mp.map">
+       <md-content class="md-padding" flex ng-controller="mp.chat">
             <md-grid-list md-cols-gt-sm="6" md-cols="1" md-gutter="2em" md-row-height="1:1">
 
                 <md-grid-tile md-colspan-gt-sm="3" md-colspan="1" md-rowspan-gt-sm="3" md-rowspan="2">
-                    <md-card flex ng-app="app" layout-fill>
+                    <md-card flex ng-app="app" ng-controller="mp.chat" layout-fill>
 
                         <md-toolbar layout="row" class="md-primary">
                             <div class="md-toolbar-tools">
@@ -82,25 +82,40 @@
 									<md-tabs md-selected="selectedIndex" md-border-bottom md-autoselect>
 										<md-tab label={{chattab.title}}>
 											<md-input-container md-no-float>
-												<span layout="row" style="padding-right: 30px">
-													<md-icon aria-label="search" class="material-icons" style="padding-right: 30px">search</md-icon>
+												<span layout="row" >
+													<md-icon aria-label="search" class="material-icons">search</md-icon>
 													<input type="text" ng-model="search_text_chat" placeholder="Search">
 												</span>
 											</md-input-container>
 											<div ng-repeat="item in chattab.content | filter: search_text_chat">
-												<md-button ng-click="openChat(item)" class="md-primary">{{item.first_name}}  {{item.last_name}}</md-button>
+												<md-button ng-click="openChat(item)" class="md-primary">{{item.first_name}} {{item.last_name}}</md-button>
 												<md-divider></md-divider>
 											</div>
 										</md-tab>
 										<md-tab ng-click="setChat(tab.id)" ng-repeat="tab in tabs" label={{tab.title}} ng-if="tab.title!='Chat'" ng-disabled="tab.disabled" layout-fill>
 												<div class="demo-tab tab{{$index%4}}" style="overflow-y: scroll; height: 70%; padding: 25px; text-align: left;">
-													<div ng-repeat="item in messages">
+													<div style="height:70%" ng-repeat="item in messages">
+														</br><h style="color:lightgrey">{{item.sentBy}}</h>
 														</br>{{item.body}}</br>
 													</div>
 													<br/>
-													<input type="text" ng-model="messagetext" placeholder="Type a message...">
+													<input id="chattext" type="text" ng-model="messagetext" placeholder="Type a message...">
 													<md-button class="md-primary md-raised" ng-click="sendMessage(tab.id, messagetext)" ng-disabled="tabs.length <= 1">Send</md-button>
 												</div>
+										</md-tab>
+										<md-tab label="MUBot">
+											<div class="demo-tab tab{{$index%4}}" style="overflow-y: scroll; height: 70%; padding: 25px; text-align: left;" ng-controller="mp.bot">
+													<div style="height:70%" ng-repeat="item in botmessages">
+														</br><h style="color:lightgrey">You: </h>
+														</br>{{item.userInput}}</br>
+														</br><h style="color:lightgrey">MUBot: </h>
+														</br>{{item.response}}</br>
+													</div>
+													<br/>
+													<input id="botquery" type="text" ng-model="messagetext" placeholder="Type a message...">
+													<md-button class="md-primary md-raised" ng-click="find(messagetext)">Send</md-button>
+													<br/>
+											</div>
 										</md-tab>
 									</md-tabs>
 								</md-content>
@@ -132,14 +147,14 @@
         </md-content>
 </md-tab>
 <md-tab label="Forums">
-<md-content class="md-padding" flex ng-controller="mp.map" style="margin-left:375px">
+<md-content class="md-padding" flex style="margin-left:375px">
 		<md-grid-list md-cols-gt-sm="6" md-cols="1" md-gutter="2em" md-row-height="1:1">
-		    <md-grid-tile md-colspan-gt-sm="4" md-colspan="3" md-rowspan-gt-sm="3" md-rowspan="0">
-                <md-card flex ng-app="app" layout-fill>
+		    <md-grid-tile md-colspan-gt-sm="4" md-colspan="3" md-rowspan-gt-sm="3" md-rowspan="3">
+                <md-card flex ng-app="app" ng-controller="mp.forum" layout-fill>
 					<div>
 					  <md-input-container>
 						<label>Title</label>
-						<input ng-model="postData.title"></input>
+						<input id="postTitle" ng-model="postData.title"></input>
 					  </md-input-container>
 					</div>
 					  <form name="postForm">
@@ -147,7 +162,7 @@
 						<div layout-gt-sm="row">
 						  <md-input-container class="md-block" flex-gt-sm>
 							<label>Subject</label>
-							<md-select ng-model="postData.subject">
+							<md-select id="postSubject" ng-model="postData.subject">
 							  <md-option ng-repeat="subject in subjects" value="{{subject.abbrev}}">
 								{{subject.abbrev}}
 							  </md-option>
@@ -157,27 +172,48 @@
 
 							<md-input-container class="md-block">
 							  <label>More info</label>
-							  <textarea ng-model="postData.body" md-maxlength="500" rows="3" md-select-on-focus></textarea></br>
+							  <textarea id="postBody" ng-model="postData.body" md-maxlength="500" rows="3" md-select-on-focus></textarea></br>
 							</md-input-container>
 						 
 						 <md-button type="submit" ng-click="writeNewPost(postData.title, postData.subject, postData.body)" class="md-raised md-primary">Post</md-button>
 					  </form>
 				</md-card>
 			</md-grid-tile>
-		</md-grid-list>
+		<!--</md-grid-list>-->
 		</br>
-        <md-grid-list md-cols-gt-sm="6" md-cols="1" md-gutter="2em" md-row-height="1:1">
+        <!--<md-grid-list md-cols-gt-sm="6" md-cols="1" md-gutter="2em" md-row-height="1:1">-->
 
-                <md-grid-tile md-colspan-gt-sm="4" md-colspan="1" md-rowspan-gt-sm="2" md-rowspan="2">
-                    <md-card flex ng-app="app" layout-fill>
+                <md-grid-tile md-colspan-gt-sm="4" md-colspan="1" md-rowspan-gt-sm="4" md-rowspan="4">
+                    <md-card flex ng-app="app" ng-controller="mp.forum" layout-fill>
 
 						<div>
-                            <md-input-container md-no-float>
+                            <md-input-container md-no-float layout="row">
                                 <span layout="row" style="padding-right: 30px">
                                     <md-icon aria-label="search" class="material-icons" style="padding-right: 30px">search</md-icon>
-                                    <input type="text" ng-model="search_text_posts" placeholder="Search">
+									<input type="text" ng-model="search_text_posts" placeholder="Search">
                                 </span>
                             </md-input-container>
+								<md-menu md-position-mode="target-right target">
+										<md-button ng-click="$mdOpenMenu($event)">
+											<p>View</p>
+										</md-button>
+										<md-menu-content width="3">
+											
+											<md-menu-item>
+												<md-button ng-click="viewAll()">
+												<md-icon md-menu-origin aria-label="view_all_posts" class="material-icons">person</md-icon>
+													<span md-menu-align-target="">View All Posts</span>
+												</md-button>
+											</md-menu-item>
+											<md-menu-divider></md-menu-divider>
+											<md-menu-item>
+												<md-button ng-click="viewStarred()">
+												<md-icon md-menu-origin aria-label="view_-KY3m1gaT31Qzt9rCEMAred_posts" class="material-icons">star rate</md-icon>
+													<span md-menu-align-target="">View Starred Posts</span>
+												</md-button>
+											</md-menu-item>
+										</md-menu-content>
+									</md-menu>
                         </div>
                         <section flex layout="column">
                             <!-- <md-subheader class="md-accent">{{subheader}}</md-subheader> -->
@@ -188,6 +224,10 @@
                                             <h5>{{item.author}}</br>{{item.date}}</br>{{item.subject}}</h5>
                                             <h5>{{item.body}}</h5>
                                         </div>
+										<md-button ng-click="star(item)">
+												<md-icon md-menu-origin aria-label="view_starred_posts" class="material-icons">star rate</md-icon>
+													<span md-menu-align-target="">Star</span>
+										</md-button>
                                         <md-divider></md-divider>
                                     </md-list-item>
                                 </md-virtual-repeat-container>
@@ -198,26 +238,28 @@
         </md-grid-list>
     </md-content>
 </md-tab>
-<md-tab label="Mubot">
+<!--<md-tab label="Mubot">
 		<md-content class="md-padding" flex ng-controller="mp.map" style="margin-left:375px">
             <md-grid-list md-cols-gt-sm="6" md-cols="3" md-gutter="2em" md-row-height="1:0.9">
 
                 <md-grid-tile md-colspan-gt-sm="4" md-colspan="2" md-rowspan-gt-sm="3" md-rowspan="1">
-                    <md-card layout-fill>
+                    <md-card layout-fill ng-controller="mp.bot">
 
                         <md-toolbar layout="row" class="md-primary">
                             <div class="md-toolbar-tools">
-                                <span>MuBot</span>
+                                <span>MUBot</span>
                             </div>
                         </md-toolbar>
 
                         <section flex layout="column">
-                            <!-- <md-subheader class="md-accent">{{subheader}}</md-subheader> -->
                             <md-list flex>
                                 <md-virtual-repeat-container layout-fill style="height:auto;" md-top-index="topIndex">
-                                    <md-list-item class="md-3-line" md-virtual-repeat="item in botmessages" layout-fill>
+                                    <md-list-item style="height:30%" class="md-3-line" md-virtual-repeat="item in botmessages | orderBy: 'item.date':true" layout-fill>
                                         <div class="md-list-item-text" layout="column" layout-padding>
-											<h3>{{item}}</h3>
+											<md-button ng-click="find(item.userInput)">
+												<h3>You: {{item.userInput}}</h3>
+												<h4>Mubot: {{item.response}}</h4>
+											</md-button>
                                         </div>
                                         <md-divider></md-divider>
                                     </md-list-item>
@@ -230,10 +272,10 @@
 							<h5 style="text-align: center">{{response}}</h5>
                             <md-input-container md-no-float>
                                 <span layout="row" style="padding-right: 30px; padding-left:30px">
-                                    <input type="text" ng-model="search_text_bot" placeholder="Ask a Question..."></input>
+                                   <form> <input id="botquery" required type="text" ng-model="text_bot" placeholder="Ask a Question..."></input></form>
                                 </span>
                             </md-input-container>
-							<md-button ng-click="find(search_text_bot)" class="md-raised md-primary">Send</md-button>
+							<md-button ng-click="find(text_bot)" class="md-raised md-primary">Send</md-button>
                         </div>
 
                     </md-card>
@@ -241,5 +283,5 @@
 			</md-grid-list>
 		</md-content> 
 		
-</md-tab>
+</md-tab>-->
 </md-tabs>
