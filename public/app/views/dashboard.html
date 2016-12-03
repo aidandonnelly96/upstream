@@ -1,6 +1,9 @@
 <md-tabs class="md-primary" md-stretch-tabs="always" md-no-ink md-dynamic-height md-autoselect flex>
+
+    <!-- *** MAP TAB *** -->
+
     <md-tab label="Map">
-        <md-content class="md-padding" flex ng-controller="mp.map">
+        <md-content class="md-padding" flex ng-controller="dc.map">
             <md-grid-list md-cols-gt-sm="6" md-cols="1" md-gutter="2em" md-row-height="1:0.9">
 
                 <md-grid-tile md-colspan-gt-sm="2" md-colspan="1" md-rowspan-gt-sm="3" md-rowspan="1">
@@ -65,18 +68,18 @@
         </md-content>
     </md-tab>
 
+    <!-- *** STUDENT TAB *** -->
+
     <md-tab label="Dashboard">
-       <md-content class="md-padding" flex ng-controller="mp.chat">
+       <md-content class="md-padding" flex ng-controller="dc.chat">
             <md-grid-list md-cols-gt-sm="6" md-cols="1" md-gutter="2em" md-row-height="1:1">
 
                 <md-grid-tile md-colspan-gt-sm="3" md-colspan="1" md-rowspan-gt-sm="3" md-rowspan="2">
-                    <md-card flex ng-app="app" ng-controller="mp.chat" layout-fill>
+                    <md-card flex ng-app="app" ng-controller="dc.chat" layout-fill>
 
-                        <md-toolbar layout="row" class="md-primary">
-                            <div class="md-toolbar-tools">
-                                <span>Messages</span>
-                            </div>
-                        </md-toolbar>
+                        <md-card-header>
+                            <h2>Messages</h2>
+                        </md-card-header>
                         <section flex layout="column">
                               <md-content class="md-padding" style="background-color:white">
 									<md-tabs md-selected="selectedIndex" md-border-bottom md-autoselect>
@@ -104,7 +107,7 @@
 												</div>
 										</md-tab>
 										<md-tab label="MUBot">
-											<div class="demo-tab tab{{$index%4}}" style="overflow-y: scroll; height: 70%; padding: 25px; text-align: left;" ng-controller="mp.bot">
+											<div class="demo-tab tab{{$index%4}}" style="overflow-y: scroll; height: 70%; padding: 25px; text-align: left;" ng-controller="dc.bot">
 													<div style="height:70%" ng-repeat="item in botmessages">
 														</br><h style="color:lightgrey">You: </h>
 														</br>{{item.userInput}}</br>
@@ -124,12 +127,15 @@
                 </md-grid-tile>
 
                 <md-grid-tile md-colspan-gt-sm="3" md-colspan="1" md-rowspan-gt-sm="1" md-rowspan="1">
-                    <md-card layout-fill>
-                        <md-toolbar layout="row" class="md-primary">
-                            <div class="md-toolbar-tools">
-                                <span>Weather</span>
+
+                    <md-card layout-fill ng-controller="dc.weather">
+                        <div layout="row" flex layout-align="space-around center">
+                            <div class="md-icon-button" aria-label="Icon">
+                                <md-icon style="height: 100px; width: 100px" md-svg-src="{{img}}"></md-icon>
                             </div>
-                        </md-toolbar>
+                            <div><h1>{{ temp }}</h1></div>
+                            <div><h2>{{ day }}</h2>{{ location }}</p></div>
+                        </div>
                     </md-card>
                 </md-grid-tile>
 
@@ -140,17 +146,22 @@
                                 <span>Timetable</span>
                             </div>
                         </md-toolbar>
+<!--                         <md-card-header>
+                            <h2>Timetable</h2>
+                        </md-card-header> -->
                     </md-card>
                 </md-grid-tile>
 
             </md-grid-list>
         </md-content>
 </md-tab>
+
+
 <md-tab label="Forums">
 <md-content class="md-padding" flex style="margin-left:375px">
 		<md-grid-list md-cols-gt-sm="6" md-cols="1" md-gutter="2em" md-row-height="1:1">
 		    <md-grid-tile md-colspan-gt-sm="4" md-colspan="3" md-rowspan-gt-sm="3" md-rowspan="3">
-                <md-card flex ng-app="app" ng-controller="mp.forum" layout-fill>
+                <md-card flex ng-app="app" ng-controller="dc.forum" layout-fill>
 					<div>
 					  <md-input-container>
 						<label>Title</label>
@@ -184,7 +195,7 @@
         <!--<md-grid-list md-cols-gt-sm="6" md-cols="1" md-gutter="2em" md-row-height="1:1">-->
 
                 <md-grid-tile md-colspan-gt-sm="4" md-colspan="1" md-rowspan-gt-sm="4" md-rowspan="4">
-                    <md-card flex ng-app="app" ng-controller="mp.forum" layout-fill>
+                    <md-card flex ng-app="app" ng-controller="dc.forum" layout-fill>
 
 						<div>
                             <md-input-container md-no-float layout="row">
@@ -239,11 +250,11 @@
     </md-content>
 </md-tab>
 <!--<md-tab label="Mubot">
-		<md-content class="md-padding" flex ng-controller="mp.map" style="margin-left:375px">
+		<md-content class="md-padding" flex ng-controller="dc.map" style="margin-left:375px">
             <md-grid-list md-cols-gt-sm="6" md-cols="3" md-gutter="2em" md-row-height="1:0.9">
 
                 <md-grid-tile md-colspan-gt-sm="4" md-colspan="2" md-rowspan-gt-sm="3" md-rowspan="1">
-                    <md-card layout-fill ng-controller="mp.bot">
+                    <md-card layout-fill ng-controller="dc.bot">
 
                         <md-toolbar layout="row" class="md-primary">
                             <div class="md-toolbar-tools">
