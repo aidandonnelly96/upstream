@@ -82,8 +82,15 @@
 			  
 			  // Get a key for a new Post.
 			  var newPostKey = firebase.database().ref().child('posts').push().key;
+			  var d=new Date();
+			  Data.child('users').child(uid).child('first_name').once('value',function(snapshot){
+				  $scope.first_name=snapshot.val();
+			  });
+			  Data.child('users').child(uid).child('last_name').once('value',function(snapshot){
+				  $scope.last_name=snapshot.val();
+			  });
 			  var postData = {
-				author: $scope.name,
+				author: $scope.first_name+" "+$scope.last_name,
 				date: d,
 				uid: user.uid,
 				body: body,
@@ -104,6 +111,7 @@
 				$scope.posts=$firebaseArray(Data.child('users').child(uid).child('starred-posts'));
 			}
 			$scope.star=function(item){
+				console.log(item.id)
 				var starData={
 					author: item.author,
 					date: item.date,
@@ -114,7 +122,7 @@
 					id: item.id,
 				}
 				var star={};
-				star['users/'+uid+'/starred-posts/'+item.id]=starData;
+				star['users/'+Auth.$getAuth().uid+'/starred-posts/'+item.id]=starData;
 				
 				return firebase.database().ref().update(star);
 			}
@@ -140,6 +148,9 @@
 				//if ( current + 1 )                $log.debug('Hello ' + selected.title + '!');
 			});
 			$scope.sendMessage=function(id, message){
+				Data.child('users').child($scope.uid).child('first_name').once('value',function(snapshot){
+					$scope.first_name=snapshot.val();
+				})
 				window.document.getElementById("chattext").value="";
 				var user = firebase.auth().currentUser;
 				Data.child('users').child($scope.uid).child('chatwith').child(id).once('value',function(snapshot){
@@ -149,6 +160,7 @@
 						sent: d,
 						messageid: newMessageKey,
 						body: message,
+						sentBy: $scope.first_name,
 					}
 					var messageupdates={};
 					messageupdates['room-metadata/'+receiverid.id+'/messages/'+newMessageKey]=messageData;

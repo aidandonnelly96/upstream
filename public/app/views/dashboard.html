@@ -98,7 +98,7 @@
 										<md-tab ng-click="setChat(tab.id)" ng-repeat="tab in tabs" label={{tab.title}} ng-if="tab.title!='Chat'" ng-disabled="tab.disabled" layout-fill>
 												<div class="demo-tab tab{{$index%4}}" style="overflow-y: scroll; height: 70%; padding: 25px; text-align: left;">
 													<div style="height:70%" ng-repeat="item in messages">
-														<!--</br><h style="color:lightgrey">{{item.sentBy}}</h>-->
+														</br><h style="color:lightgrey">{{item.sentBy}}</h>
 														</br>{{item.body}}</br>
 													</div>
 													<br/>
