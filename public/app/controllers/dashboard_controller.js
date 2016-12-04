@@ -160,9 +160,9 @@
 			$scope.openChat=function(item){
 					var d=new Date();
 					$scope.receiver=item.id;
-					var x=roomNotExist($scope.uid, item.id);
-					x.$loaded().then(function(){
-						if(x.length==1){
+					var roomExists=roomNotExist($scope.uid, item.id);
+					roomExists.$loaded().then(function(){
+						if(roomExists.length==1){
 							Data.child('users').child($scope.uid).child('chatwith').child(item.id).once('value',function(snapshot){
 								var room=snapshot.val();
 								$scope.messages = $firebaseArray(Data.child('room-metadata').child(room.id).child('messages'));
