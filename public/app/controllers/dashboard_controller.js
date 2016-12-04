@@ -144,15 +144,12 @@
 				var user = firebase.auth().currentUser;
 				Data.child('users').child($scope.uid).child('chatwith').child(id).once('value',function(snapshot){
 					var receiverid=snapshot.val();
-					console.log(receiverid.id);
 					var newMessageKey=firebase.database().ref().child('room-metadata').push().key;
 					var messageData={
 						sent: d,
 						messageid: newMessageKey,
 						body: message,
-						sentBy: $scope.first_name
 					}
-					console.log(newMessageKey);
 					var messageupdates={};
 					messageupdates['room-metadata/'+receiverid.id+'/messages/'+newMessageKey]=messageData;
 					messageupdates['room-metadata/'+receiverid.id+'/lastmessage']=d;
@@ -163,33 +160,33 @@
 			$scope.openChat=function(item){
 					var d=new Date();
 					$scope.receiver=item.id;
-					if(!roomNotExist($scope.uid, item.id)){
-						Data.child('users').child($scope.uid).child('chatwith').child(item.id).once('value',function(snapshot){
-							var room=snapshot.val();
-							$scope.messages = $firebaseArray(Data.child('room-metadata').child(room.id).child('messages'));
-							console.log($scope.messages);
-							tabs.push({ title: item.first_name+" "+item.last_name, content: messages, id: item.id, disabled: false});
-						});
+					var x=roomNotExist($scope.uid, item.id);
+					x.$loaded().then(function(){
+						if(x.length==1){
+							Data.child('users').child($scope.uid).child('chatwith').child(item.id).once('value',function(snapshot){
+								var room=snapshot.val();
+								$scope.messages = $firebaseArray(Data.child('room-metadata').child(room.id).child('messages'));
+								tabs.push({ title: item.first_name+" "+item.last_name, content: messages, id: item.id, disabled: false});
+							});
+						}
+						else{
+							var newChatKey = firebase.database().ref().child('rooms').push().key;
+							var messages="";
+							var chatData={
+								created: d,
+								roomid: newChatKey,
+								lastmessage: d,
+							};
+							var chatupdates={};
+							tabs.push({ title: item.first_name+" "+item.last_name, content: messages, id: item.id, disabled: false});	
+							chatupdates['/users/'+ $scope.uid + '/chatwith/' + item.id + '/id'] = newChatKey;
+							chatupdates['/users/'+ item.id + '/chatwith/' + $scope.uid + '/id'] = newChatKey;
+							chatupdates['/room-metadata/' + newChatKey] = chatData;
+							return firebase.database().ref().update(chatupdates);
 					}
-					//$chatroom=Data.child('users').child($scope.uid).child('chatwith').child($scope.uid).child('roomid').set(newChatKey);
-					else if(roomNotExist($scope.uid, item.id)){
-						var newChatKey = firebase.database().ref().child('rooms').push().key;
-						var messages="";
-						var chatData={
-							created: d.getDate(),
-							roomid: newChatKey,
-							lastmessage: d.getDate(),
-						};
-						var chatupdates={};
-						tabs.push({ title: item.first_name+" "+item.last_name, content: messages, id: item.id, disabled: false});	
-						chatupdates['/users/'+ $scope.uid + '/chatwith/' + item.id + '/id'] = newChatKey;
-						chatupdates['/users/'+ item.id + '/chatwith/' + $scope.uid + '/id'] = newChatKey;
-						chatupdates['/room-metadata/' + newChatKey] = chatData;
-						return firebase.database().ref().update(chatupdates);
-					}
+					});
 				
 				var messages=$firebaseArray(Data.child('users').child($scope.uid).child('chatwith').child(item.id).child('roomid'));
-				//$scope.room=$firebaseArray(Data.child('room-metadata').child(messages));
 			}
 			$scope.setChat=function(item){
 				Data.child('users').child($scope.uid).child('chatwith').child(item).once('value',function(snapshot){
@@ -198,10 +195,8 @@
 				});
 			}
 			var roomNotExist=function(id1, id2){
-				Data.child('users').child(id1).child('chatwith').child(id2).once('value',function(snapshot){
-					var exists=(snapshot.val()!=null)
-					return exists;
-				})
+				var id=$firebaseArray(Data.child('users').child(id1).child('chatwith').child(id2));
+				return id;
 			}
 			$scope.removeTab = function (tab) {
 			  var index = tabs.indexOf(tab);
@@ -234,7 +229,6 @@
 				return firebase.database().ref().update(chatbotupdates);
 			}
 		$scope.setBot=function(){
-			console.log("hello world");
 			$scope.botmessages=$firebaseArray(Data.child('users').child(uid).child('chatbot'));
 		 }
 		}
