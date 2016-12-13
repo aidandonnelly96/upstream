@@ -8,8 +8,8 @@
 		self.weather = weather;
 		self.map = map;
 		self.forum = forum;
-		self.chat = chat;
-		self.bot = bot;
+		self.messaging = messaging;
+		//self.bot = bot;
 		self.timetable=timetable;
 		
 		function timetable($scope, $firebaseArray, Data, Auth, $timeout){
@@ -87,8 +87,9 @@
 
 			}
 		};
+//<<<<<<< HEAD
 		
-				function forum($scope, $firebaseArray, Data, Auth, $timeout){
+		function forum($scope, $firebaseArray, Data, Auth, $timeout){
 			var uid=Auth.$getAuth().uid;
 			$scope.posts = $firebaseArray(Data.child('posts'));
 			$scope.subjects = ('All, Computer Science,Biology,Chemistry,History,Psychology,Anthropology,Engineering,Experimental Physics,Mathematics,Mathematical Pysics ').split(',').map(function(subject) {
@@ -149,7 +150,7 @@
 			}
 		};
 		
-		function chat($scope, $firebaseArray, Data, Auth, $timeout){
+		/*function chat($scope, $firebaseArray, Data, Auth, $timeout){
 			$scope.uid=Auth.$getAuth().uid;
 			$scope.rooms = $firebaseArray(Data.child('users'));
 			var d = new Date();
@@ -182,74 +183,169 @@
 						messageid: newMessageKey,
 						body: message,
 						sentBy: $scope.first_name,
+=======
+
+		/* Messaging Display Function */
+
+		function messaging($scope, $firebaseArray, $firebaseObject, $timeout, Data, Auth) {
+
+			$scope.current_user_id = Auth.$getAuth().uid;
+
+			var room_list = $firebaseArray(Data.child('users'));
+			$scope.users = [];
+
+			// remove current user from list; for display purposes only
+			room_list.$loaded()
+			.then(function(){
+				angular.forEach(room_list, function(user, uid) {
+					uid = $scope.current_user_id;
+					if (user.id != uid) {
+						$scope.users.push(user);
 					}
-					var messageupdates={};
-					messageupdates['room-metadata/'+receiverid.id+'/messages/'+newMessageKey]=messageData;
-					messageupdates['room-metadata/'+receiverid.id+'/lastmessage']=d;
-					return firebase.database().ref().update(messageupdates);
 				});
+			});
+
+			// set up tab configurations
+			var tabs = [{ title: 'Contacts', content: $scope.users}];
+			selected = 0,
+			previous = null;
+			$scope.tabs = tabs;
+			$scope.contacts=tabs[0];
+			$scope.tab_state = false;
+			$scope.contact_tab_state = false;
+			$scope.bot_tab_state = false;
+
+			// change tab state for ng-show in DOM
+			$scope.changeTabState = function(bool) { $scope.tab_state = bool; $scope.bot_tab_state = false; $scope.contact_tab_state = false;  }
+			$scope.changeBotState = function(bool) { $scope.bot_tab_state = bool; $scope.tab_state=false; $scope.contact_tab_state=false;}
+			$scope.changeContactState = function(bool) { $scope.contact_tab_state = bool; $scope.tab_state=false; $scope.bot_tab_state=false;}
+
+			$scope.openMessaging = function(item) { 
+
+				//capture recipient when message tab opened
+				$scope.recipient = item.first_name + " " + item.last_name;
+				$scope.recipient_id = item.id;
+
+				// create rooms node in firebase
+				var rooms = $firebaseArray(Data.child("rooms"));
 				
-			}
-			$scope.openChat=function(item){ 
-					var d=new Date();
-					$scope.receiver=item.id;
-					var roomExists=roomNotExist($scope.uid, item.id);
-					roomExists.$loaded().then(function(){
-						if(roomExists.length==1){
-							Data.child('users').child($scope.uid).child('chatwith').child(item.id).once('value',function(snapshot){
-								var room=snapshot.val();
-								$scope.messages = $firebaseArray(Data.child('room-metadata').child(room.id).child('messages'));
-								tabs.push({ title: item.first_name+" "+item.last_name, content: messages, id: item.id, disabled: false});
+				// check whether room previously created; if not, create
+				rooms.$loaded().then(function(){
+					var bool = false;
+					Data.child('rooms').once('value', function(snapshot) {
+						snapshot.forEach(function(itemSnapshot) {
+							var data = itemSnapshot.val();
+							// FALSE IFF (current user OR recipient) is (initiator OR recipient)
+							if (($scope.current_user_id == data.initiator && $scope.recipient_id == data.recipient)) { 
+								bool = true;
+							}
+							else if (($scope.recipient_id == data.initiator) && ($scope.current_user_id == data.recipient)) {
+								bool = true;
+							}
+						});
+						// add room to firebase if conditions satisfied
+						if (!bool) {
+							rooms.$add({
+								initiator: $scope.current_user_id,
+								recipient: $scope.recipient_id
 							});
 						}
-						else{
-							var newChatKey = firebase.database().ref().child('rooms').push().key;
-							var messages="";
-							var chatData={
-								created: d,
-								roomid: newChatKey,
-								lastmessage: d,
-							};
-							var chatupdates={};
-							tabs.push({ title: item.first_name+" "+item.last_name, content: messages, id: item.id, disabled: false});	
-							chatupdates['/users/'+ $scope.uid + '/chatwith/' + item.id + '/id'] = newChatKey;
-							chatupdates['/users/'+ item.id + '/chatwith/' + $scope.uid + '/id'] = newChatKey;
-							chatupdates['/room-metadata/' + newChatKey] = chatData;
-							return firebase.database().ref().update(chatupdates);
-					}
 					});
-				
-				var messages=$firebaseArray(Data.child('users').child($scope.uid).child('chatwith').child(item.id).child('roomid'));
-			}
-			$scope.setChat=function(item){
-				Data.child('users').child($scope.uid).child('chatwith').child(item).once('value',function(snapshot){
-					var room=snapshot.val();
-					$scope.messages = $firebaseArray(Data.child('room-metadata').child(room.id).child('messages'));
+				}).catch(function(error) {
+					console.error("Error:", error);
+				});	
+
+				function sendMessage(message) {
+
+					// create room_metadata in firebase
+					var room_metadata = $firebaseArray(Data.child("room_metadata"));
+
+					room_metadata.$loaded().then(function(){
+
+						Data.child('users').child($scope.current_user_id).once('value', function(snap) {
+							$scope.current_user_name = snap.val().first_name + " " + snap.val().last_name;
+
+							Data.once('value', function() {
+								room_metadata.$add({
+									sender: $scope.current_user_name,
+									receiver: $scope.recipient,
+									message: message
+								}).then(function(ref) {
+									// push latest message to message_objs
+									$scope.message_objs.push({message :message, sender: $scope.current_user_name});
+								})
+							});
+						});
+
+					}).catch(function(error) {
+						console.error("Error:", error);
+					});	
+
+				}
+
+				$scope.message = { text: null };
+
+				// validation done in DOM - submit() posts message to firebase & clears input
+				$scope.submit = function(form) {
+					console.log(form);
+					if ($scope.message.text) {
+						console.log($scope.message.text);
+						sendMessage($scope.message.text);
+
+						$scope.message.text = '';
+						form.$setPristine();
+						form.$setUntouched();
+					}
+				};
+
+				var messages = $firebaseObject(Data.child('room_metadata'));
+				$scope.message_objs = [];
+
+				messages.$loaded()
+				.then(function() {
+					Data.child('users').child($scope.current_user_id).once('value', function(item) {
+						$scope.current_user_name = item.val().first_name + " " + item.val().last_name;
+
+						// only display messages with current_user and recipient members
+						Data.child('room_metadata').once('value', function(data) {
+							data.forEach(function(itemSnapshot) {
+								if (($scope.current_user_name == itemSnapshot.val().sender) && ($scope.recipient == itemSnapshot.val().receiver)) {
+									$scope.message_objs.push({message :itemSnapshot.val().message, sender: itemSnapshot.val().sender});
+								}
+								else if (($scope.recipient === itemSnapshot.val().sender) && ($scope.current_user_name === itemSnapshot.val().receiver)) {
+									$scope.message_objs.push({message :itemSnapshot.val().message, sender: itemSnapshot.val().sender});
+								}
+							});
+
+						}).catch(function(error) {
+							console.error("Error:", error);
+						});	
+					});
 				});
-			}
-			var roomNotExist=function(id1, id2){
-				var id=$firebaseArray(Data.child('users').child(id1).child('chatwith').child(id2));
-				return id;
-			}
-			$scope.removeTab = function (tab) {
-			  var index = tabs.indexOf(tab);
-			  tabs.splice(index, 1);
+				
+				// dynamic user chat tab
+				if ($scope.tabs.length == 1) {
+					$scope.tabs.push({ title: $scope.recipient, content: $scope.message_objs, disabled: false});
+				}
+				// check if tab is already open and if the tab has a different title
+				else if ($scope.tabs.length == 2 && $scope.tabs[1].title != $scope.recipient) {
+					$scope.tabs.splice(1);
+					$scope.tabs.push({ title: $scope.recipient, content: $scope.message_objs, disabled: false});
+				}
 			};
-		};
-		
-		function bot($scope, $firebaseArray, Data, Auth, $timeout){
 			var uid=Auth.$getAuth().uid;
 			var d=new Date();
 			$scope.botmessages=$firebaseArray(Data.child('users').child(uid).child('chatbot'));
 			$scope.find=function(input){
-				window.document.getElementById("botquery").value="";
+				console.log("xxx"+input);
+				//window.document.getElementById("botquery").value="";
 				$scope.input=input;
 				$scope.response=findanswer(input);
 				if($scope.response=="undefined"){
 					$scope.response="Unfortunately, I don't have an answer for that";
 				}
 				else if($scope.response=="Hi"){
-					Data.child('users').child($scope.uid).child('first_name').once('value',function(snapshot){
+					Data.child('users').child(uid).child('first_name').once('value',function(snapshot){
 						$scope.first_name=snapshot.val();
 					})
 					$scope.response="Hi "+$scope.first_name;
