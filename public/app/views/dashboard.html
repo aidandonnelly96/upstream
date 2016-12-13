@@ -31,12 +31,14 @@
                             </md-list>
                         </section>
 
-                        <md-input-container md-no-float>
-                            <span layout="row" style="padding-right: 30px">
-                                <md-icon aria-label="search" class="material-icons" style="padding-right: 30px">search</md-icon>
-                                <input type="text" ng-model="search_text" placeholder="Search">
-                            </span>
-                        </md-input-container>
+                        <div>
+                            <md-input-container md-no-float>
+                                <span layout="row" style="padding-right: 30px">
+                                    <md-icon aria-label="search" class="material-icons" style="padding-right: 30px">search</md-icon>
+                                    <input type="text" ng-model="search_text" placeholder="Search">
+                                </span>
+                            </md-input-container>
+                        </div>
 
                     </md-card>
                 </md-grid-tile>
@@ -69,111 +71,276 @@
     <!-- *** STUDENT TAB *** -->
 
     <md-tab label="Student">
-        <md-content class="md-padding" flex ng-controller="dc.messaging">
-            <md-grid-list md-cols-gt-sm="6" md-cols="1" md-gutter="2em" md-row-height="1:0.9">
+       <md-content class="md-padding" flex ng-controller="dc.chat">
+            <md-grid-list md-cols-gt-sm="6" md-cols="1" md-gutter="2em" md-row-height="1:1">
 
                 <md-grid-tile md-colspan-gt-sm="3" md-colspan="1" md-rowspan-gt-sm="3" md-rowspan="2">
-                    <md-card layout-fill flex>
+                    <md-card flex ng-app="app" ng-controller="dc.chat" layout-fill>
 
-                        <md-toolbar class="md-primary">
-                            <div class="md-toolbar-tools">
-                                <span>Messaging</span>
-                            </div>
-                        </md-toolbar>
-
+                        <md-card-header>
+                            <h2>Messages</h2>
+                        </md-card-header>
                         <section flex layout="column">
-                            <md-content flex class="md-padding" style="background-color:white">
-                                <md-tabs md-selected="selectedIndex" md-stretch-tabs="always" md-no-ink md-dynamic-height flex>
-
-                                    <md-tab label="{{ contacts.title }}" md-on-select="changeTabState(false)">
-                                        <md-list flex>
-                                            <md-list-item ng-repeat="item in users | filter: search_text_chat">
-                                                <div layout="column">
-                                                    <md-button ng-click="openMessaging(item)" class="md-primary">{{ item.first_name }} {{ item.last_name }}</md-button>
-                                                </div>
-                                                <md-divider></md-divider>
-                                            </md-list-item>
-                                        </md-list>
-                                    </md-tab>
-                                    
-                                    <!-- User Tab -->
-                                    <md-tab ng-repeat="tab in tabs" md-on-select="changeTabState(true)" md-active="tab_state=true" label="{{ tab.title }}" ng-if="tab.title!='Contacts'">
-                                        <md-list flex>
-                                            <md-list-item ng-repeat="item in message_objs" class="md-2-line">
-                                                <div class="md-list-item-text">
-                                                    <h3>{{ item.message }}</h3>
-                                                    <p>{{ item.sender }}</p>
-                                                </div>
-                                                <md-divider></md-divider>
-                                            </md-list-item>
-
-
-                                        </md-list>
-                                    </md-tab>
-
-
-                                </md-tabs>
-                            </md-content>
+                              <md-content class="md-padding" style="background-color:white">
+									<md-tabs md-selected="selectedIndex" md-border-bottom md-autoselect>
+										<md-tab label={{chattab.title}}>
+											<md-input-container md-no-float>
+												<span layout="row" >
+													<md-icon aria-label="search" class="material-icons">search</md-icon>
+													<input type="text" ng-model="search_text_chat" placeholder="Search">
+												</span>
+											</md-input-container>
+											<div ng-repeat="item in chattab.content | filter: search_text_chat">
+												<md-button ng-click="openChat(item)" class="md-primary">{{item.first_name}} {{item.last_name}}</md-button>
+												<md-divider></md-divider>
+											</div>
+										</md-tab>
+										<md-tab ng-click="setChat(tab.id)" ng-repeat="tab in tabs" label={{tab.title}} ng-if="tab.title!='Chat'" ng-disabled="tab.disabled" layout-fill>
+												<div class="demo-tab tab{{$index%4}}" style="overflow-y: scroll; height: 70%; padding: 25px; text-align: left;">
+													<div style="height:70%" ng-repeat="item in messages">
+														</br><h style="color:lightgrey">{{item.sentBy}}</h>
+														</br>{{item.body}}</br>
+													</div>
+													<br/>
+													<input id="chattext" type="text" ng-model="messagetext" placeholder="Type a message...">
+													<md-button class="md-primary md-raised" ng-click="sendMessage(tab.id, messagetext)" ng-disabled="tabs.length <= 1">Send</md-button>
+												</div>
+										</md-tab>
+										<md-tab label="MUBot">
+											<div class="demo-tab tab{{$index%4}}" style="overflow-y: scroll; height: 70%; padding: 25px; text-align: left;" ng-controller="dc.bot">
+													<div style="height:70%" ng-repeat="item in botmessages">
+														</br><h style="color:lightgrey">You: </h>
+														</br>{{item.userInput}}</br>
+														</br><h style="color:lightgrey">MUBot: </h>
+														</br>{{item.response}}</br>
+													</div>
+													<br/>
+													<input id="botquery" type="text" ng-model="messagetext" placeholder="Type a message...">
+													<md-button class="md-primary md-raised" ng-click="find(messagetext)">Send</md-button>
+													<br/>
+											</div>
+										</md-tab>
+									</md-tabs>
+								</md-content>
                         </section>
-
-                        <section ng-show="!tab_state">
-                            <md-input-container md-no-float class="md-block">
-                                <span layout="row" style="padding-right: 30px">
-                                    <md-icon aria-label="Search" class="material-icons" style="padding-right: 30px">search</md-icon>
-                                    <input type="text" ng-model="search_text_chat" placeholder="Search">
-                                </span>
-                            </md-input-container>
-                        </section>
-
-                        <style>
-                            #submit_btn {
-                                margin: 0px; 
-                                min-width: 1%; 
-                                line-height: 0px; 
-                                min-height: auto;
-                            }
-                        </style>
-
-                        <section ng-show="tab_state">
-                            <form ng-submit="submit(form)" name="form">
-                                <md-input-container md-no-float class="md-block">
-                                    <span layout="row" style="padding: 0 30px 0 30px">
-                                        <md-button ng-disabled="form.$invalid" ng-click="submit(form)" id="submit_btn" aria-label="submit">
-                                            <md-icon type="submit" class="material-icons">send</md-icon>
-                                        </md-button>
-                                        <div style="min-width: 30px"></div>
-                                        <input ng-model="message.text" name="message.text" type="text" placeholder="Send" required>
-                                    </span>
-                                </md-input-container>
-                            </form>
-                        </section>
-
                     </md-card>
                 </md-grid-tile>
 
                 <md-grid-tile md-colspan-gt-sm="3" md-colspan="1" md-rowspan-gt-sm="1" md-rowspan="1">
+
                     <md-card layout-fill ng-controller="dc.weather">
                         <div layout="row" flex layout-align="space-around center">
                             <div class="md-icon-button" aria-label="Icon">
                                 <md-icon style="height: 100px; width: 100px" md-svg-src="{{img}}"></md-icon>
                             </div>
                             <div><h1>{{ temp }}</h1></div>
-                            <div><h2>{{ day }}</h2><p>{{ location }}</p></div>
+                            <div><h2>{{ day }}</h2>{{ location }}</p></div>
                         </div>
                     </md-card>
                 </md-grid-tile>
-
-                <md-grid-tile md-colspan-gt-sm="3" md-colspan="1" md-rowspan-gt-sm="2" md-rowspan="1">
-                    <md-card layout-fill>
-                        <md-toolbar layout="row" class="md-primary">
-                            <div class="md-toolbar-tools">
-                                <span>Timetable</span>
-                            </div>
-                        </md-toolbar>
+				
+				<!--<section flex layout="column">
+                            <md-list flex>
+                                <md-virtual-repeat-container layout-fill style="height:auto;" md-top-index="topIndex">
+                                    <md-list-item class="md-3-line" md-virtual-repeat="item in locations | orderBy: 'campus' | filter: search_text" layout-fill>
+                                        <div class="md-list-item-text" layout="column" layout-padding>
+                                            <md-button ng-click="addMarker(item)" class="md-primary">{{item.room_name}}</md-button>
+                                            <h4>{{item.room_code}}</h4>
+                                            <p>{{item.building}}</p>
+                                        </div>
+                                        <md-divider></md-divider>
+                                    </md-list-item>
+                                </md-virtual-repeat-container>
+                            </md-list>
+                        </section>-->
+						
+					<md-grid-tile md-colspan-gt-sm="3" md-colspan="1" md-rowspan-gt-sm="2" md-rowspan="1">
+                    <md-card flex ng-app="app" ng-controller="dc.timetable" layout-fill>
+                        <section flex layout="column">
+                              <md-content class="md-padding" style="background-color:white">
+									<md-tabs md-selected="selected"md-border-bottom md-autoselect>
+										<md-tab  ng-repeat="tab in days" label={{tab.title}}>
+											<div class="demo-tab tab{{$index%4}}"   ng-repeat="num in numbers | orderBy: tab.content[num].Time" ng-if="tab.content[num].Class!=null">
+											
+											<div>{{tab.content[num].Time}}</div>
+											<div style="text-align:center">
+												<md-button class="md-primary">{{tab.content[num].Class}}</br>{{tab.content[num].Location}}</md-button>
+											</div>
+											<md-divider></md-divider>
+											
+											
+											</div>
+										</md-tab>
+									</md-tabs>
+								</md-content>
+                        </section>
                     </md-card>
                 </md-grid-tile>
-
+				 <!--<md-grid-tile md-colspan-gt-sm="3" md-colspan="1" md-rowspan-gt-sm="2" md-rowspan="1">
+					<md-card flex layout-fill ng-controller="dc.timetable">
+						<md-toolbar layout="row" class="md-primary">
+                            <md-card-header>
+                                <span>Timetable</span>
+							</md-card-header>
+                        </md-toolbar>
+						<md-card-content>
+							<section flex layout="column"  style="height:auto">
+							   <md-tabs md-selected="selected">
+									<md-tab ng-repeat="tab in days" label={{tab.title}} ng-disabled="tab.disabled" layout-fill>
+										<div class="demo-tab tab{{$index%4}}" ng-if="tab.content[num].Class!=null" ng-repeat="num in numbers | orderBy: tab.content[num].Time">
+											<div>{{tab.content[num].Time}}</div>
+											<div style="text-align:center">
+												<md-button class="md-primary">{{tab.content[num].Class}}</br>{{tab.content[num].Location}}</md-button>
+											</div>
+											<md-divider></md-divider>
+										</div>
+									</md-tab>
+								</md-tabs>
+							</section>
+						</md-card-content>
+					</md-card>
+                </md-grid-tile>-->
             </md-grid-list>
         </md-content>
-    </md-tab>
+</md-tab>
+
+
+<md-tab label="Forums">
+<md-content class="md-padding" flex style="margin-left:375px">
+		<md-grid-list md-cols-gt-sm="6" md-cols="1" md-gutter="2em" md-row-height="1:1">
+		    <md-grid-tile md-colspan-gt-sm="4" md-colspan="3" md-rowspan-gt-sm="3" md-rowspan="3">
+                <md-card flex ng-app="app" ng-controller="dc.forum" layout-fill>
+					<div>
+					  <md-input-container>
+						<label>Title</label>
+						<input id="postTitle" ng-model="postData.title"></input>
+					  </md-input-container>
+					</div>
+					  <form name="postForm">
+
+						<div layout-gt-sm="row">
+						  <md-input-container class="md-block" flex-gt-sm>
+							<label>Subject</label>
+							<md-select id="postSubject" ng-model="postData.subject">
+							  <md-option ng-repeat="subject in subjects" value="{{subject.abbrev}}">
+								{{subject.abbrev}}
+							  </md-option>
+							</md-select>
+						  </md-input-container>
+						</div>
+
+							<md-input-container class="md-block">
+							  <label>More info</label>
+							  <textarea id="postBody" ng-model="postData.body" md-maxlength="500" rows="3" md-select-on-focus></textarea></br>
+							</md-input-container>
+						 
+						 <md-button type="submit" ng-click="writeNewPost(postData.title, postData.subject, postData.body)" class="md-raised md-primary">Post</md-button>
+					  </form>
+				</md-card>
+			</md-grid-tile>
+		<!--</md-grid-list>-->
+		</br>
+        <!--<md-grid-list md-cols-gt-sm="6" md-cols="1" md-gutter="2em" md-row-height="1:1">-->
+
+                <md-grid-tile md-colspan-gt-sm="4" md-colspan="1" md-rowspan-gt-sm="4" md-rowspan="4">
+                    <md-card flex ng-app="app" ng-controller="dc.forum" layout-fill>
+
+						<div>
+                            <md-input-container md-no-float layout="row">
+                                <span layout="row" style="padding-right: 30px">
+                                    <md-icon aria-label="search" class="material-icons" style="padding-right: 30px">search</md-icon>
+									<input type="text" ng-model="search_text_posts" placeholder="Search">
+                                </span>
+                            </md-input-container>
+								<md-menu md-position-mode="target-right target">
+										<md-button ng-click="$mdOpenMenu($event)">
+											<p>View</p>
+										</md-button>
+										<md-menu-content width="3">
+											
+											<md-menu-item>
+												<md-button ng-click="viewAll()">
+												<md-icon md-menu-origin aria-label="view_all_posts" class="material-icons">person</md-icon>
+													<span md-menu-align-target="">View All Posts</span>
+												</md-button>
+											</md-menu-item>
+											<md-menu-divider></md-menu-divider>
+											<md-menu-item>
+												<md-button ng-click="viewStarred()">
+												<md-icon md-menu-origin aria-label="view_-KY3m1gaT31Qzt9rCEMAred_posts" class="material-icons">star rate</md-icon>
+													<span md-menu-align-target="">View Starred Posts</span>
+												</md-button>
+											</md-menu-item>
+										</md-menu-content>
+									</md-menu>
+                        </div>
+                        <section flex layout="column">
+                            <!-- <md-subheader class="md-accent">{{subheader}}</md-subheader> -->
+                            <md-list flex>
+                                <md-virtual-repeat-container layout-fill style="height:auto;" md-top-index="topIndex">
+                                    <md-list-item class="md-3-line" md-virtual-repeat="item in posts | orderBy: 'item.date':true | filter: search_text_posts" layout-fill>
+                                        <div class="md-list-item-text" layout="column" layout-padding>
+                                            <h5>{{item.author}}</br>{{item.date}}</br>{{item.subject}}</h5>
+                                            <h5>{{item.body}}</h5>
+                                        </div>
+										<md-button ng-click="star(item)">
+												<md-icon md-menu-origin aria-label="view_starred_posts" class="material-icons">star rate</md-icon>
+													<span md-menu-align-target="">Star</span>
+										</md-button>
+                                        <md-divider></md-divider>
+                                    </md-list-item>
+                                </md-virtual-repeat-container>
+                            </md-list>
+                        </section>
+                    </md-card>
+                </md-grid-tile>
+        </md-grid-list>
+    </md-content>
+</md-tab>
+<!--<md-tab label="Mubot">
+		<md-content class="md-padding" flex ng-controller="dc.map" style="margin-left:375px">
+            <md-grid-list md-cols-gt-sm="6" md-cols="3" md-gutter="2em" md-row-height="1:0.9">
+
+                <md-grid-tile md-colspan-gt-sm="4" md-colspan="2" md-rowspan-gt-sm="3" md-rowspan="1">
+                    <md-card layout-fill ng-controller="dc.bot">
+
+                        <md-toolbar layout="row" class="md-primary">
+                            <div class="md-toolbar-tools">
+                                <span>MUBot</span>
+                            </div>
+                        </md-toolbar>
+
+                        <section flex layout="column">
+                            <md-list flex>
+                                <md-virtual-repeat-container layout-fill style="height:auto;" md-top-index="topIndex">
+                                    <md-list-item style="height:30%" class="md-3-line" md-virtual-repeat="item in botmessages | orderBy: 'item.date':true" layout-fill>
+                                        <div class="md-list-item-text" layout="column" layout-padding>
+											<md-button ng-click="find(item.userInput)">
+												<h3>You: {{item.userInput}}</h3>
+												<h4>Mubot: {{item.response}}</h4>
+											</md-button>
+                                        </div>
+                                        <md-divider></md-divider>
+                                    </md-list-item>
+                                </md-virtual-repeat-container>
+                            </md-list>
+                        </section>
+
+                        <div>
+							<h4 style="text-align: center">{{input}}</h4>
+							<h5 style="text-align: center">{{response}}</h5>
+                            <md-input-container md-no-float>
+                                <span layout="row" style="padding-right: 30px; padding-left:30px">
+                                   <form> <input id="botquery" required type="text" ng-model="text_bot" placeholder="Ask a Question..."></input></form>
+                                </span>
+                            </md-input-container>
+							<md-button ng-click="find(text_bot)" class="md-raised md-primary">Send</md-button>
+                        </div>
+
+                    </md-card>
+                </md-grid-tile>
+			</md-grid-list>
+		</md-content> 
+		
+</md-tab>-->
 </md-tabs>
