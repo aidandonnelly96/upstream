@@ -374,7 +374,7 @@
 		$scope.setBot=function(){
 			console.log("hello world");
 			$scope.botmessages=$firebaseArray(Data.child('users').child(uid).child('chatbot'));
-		}
+		 }
 		}
 	}
 	

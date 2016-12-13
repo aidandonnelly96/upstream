@@ -10,6 +10,29 @@
 		self.forum = forum;
 		self.chat = chat;
 		self.bot = bot;
+		self.timetable=timetable;
+		
+		function timetable($scope, $firebaseArray, Data, Auth, $timeout){
+			//$scope.tabs
+			$scope.timetable=$firebaseArray(Data.child('users').child(Auth.$getAuth().uid).child('timetable'))
+			//console.log($scope.timetable.child("Monday").child("9am").child("Class"));
+			console.log($firebaseArray(Data.child('users').child(Auth.$getAuth().uid).child('timetable').child("Monday")));
+			$scope.d=new Date();
+			$scope.numbers=[0,1,2,3,4,5,6,7,8,9];
+			$scope.n=$scope.d.getDay();
+			$scope.days = [
+				  { title: 'Monday', content: $firebaseArray(Data.child('users').child(Auth.$getAuth().uid).child('timetable').child("Monday"))},
+				  { title: 'Tuesday', content: $firebaseArray(Data.child('users').child(Auth.$getAuth().uid).child('timetable').child("Tuesday"))},
+				  { title: 'Wednesday', content: $firebaseArray(Data.child('users').child(Auth.$getAuth().uid).child('timetable').child("Wednesday"))},
+				  { title: 'Thursday', content: $firebaseArray(Data.child('users').child(Auth.$getAuth().uid).child('timetable').child("Thursday"))},
+				  { title: 'Friday', content: $firebaseArray(Data.child('users').child(Auth.$getAuth().uid).child('timetable').child("Friday"))},
+				],
+				previous = null;
+				if($scope.n==6 || $scope.n==0){
+					$scope.n=1;
+				}
+				$scope.selected=$scope.n-1;
+		}
 
 		function weather($scope) {
 
@@ -169,7 +192,7 @@
 				});
 				
 			}
-			$scope.openChat=function(item){
+			$scope.openChat=function(item){ 
 					var d=new Date();
 					$scope.receiver=item.id;
 					var roomExists=roomNotExist($scope.uid, item.id);
@@ -219,12 +242,19 @@
 		function bot($scope, $firebaseArray, Data, Auth, $timeout){
 			var uid=Auth.$getAuth().uid;
 			var d=new Date();
+			$scope.botmessages=$firebaseArray(Data.child('users').child(uid).child('chatbot'));
 			$scope.find=function(input){
 				window.document.getElementById("botquery").value="";
 				$scope.input=input;
 				$scope.response=findanswer(input);
 				if($scope.response=="undefined"){
 					$scope.response="Unfortunately, I don't have an answer for that";
+				}
+				else if($scope.response=="Hi"){
+					Data.child('users').child($scope.uid).child('first_name').once('value',function(snapshot){
+						$scope.first_name=snapshot.val();
+					})
+					$scope.response="Hi "+$scope.first_name;
 				}
 				var chatBotKey=firebase.database().ref().child('users').push().key;
 				var inputData={

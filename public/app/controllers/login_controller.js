@@ -8,7 +8,6 @@
 		self.login = login;
 
 		function login($scope, Auth, Data, toast, $state) {
-
 			// func to separate email components
 			function GetEmailParts(email){
 				var objParts = {
